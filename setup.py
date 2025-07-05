@@ -352,7 +352,7 @@ For issues or questions, check the processing log in the web interface.
 **ZENIA PDF Processor** - Streamlining your shipping operations
 """
     
-    with open('README.md', 'w') as f:
+    with open('README.md', 'w', encoding='utf-8') as f:
         f.write(readme_content.strip())
     print("   ✓ Created: README.md")
 
