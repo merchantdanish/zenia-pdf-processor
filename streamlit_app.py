@@ -24,13 +24,13 @@ st.set_page_config(
 # Apply theme-based CSS
 def apply_custom_css(is_dark_mode=False):
     theme_colors = {
-        "bg_primary": "#0f172a" if is_dark_mode else "#f8fafc",
-        "bg_secondary": "#1e293b" if is_dark_mode else "#f1f5f9", 
-        "card_bg": "#1e293b" if is_dark_mode else "#ffffff",
-        "text_primary": "#f8fafc" if is_dark_mode else "#1e293b",
-        "text_secondary": "#cbd5e1" if is_dark_mode else "#475569",
-        "text_muted": "#94a3b8" if is_dark_mode else "#64748b",
-        "border": "#334155" if is_dark_mode else "#e2e8f0"
+        "bg_primary": "#f8fafc" if is_dark_mode else "#0f172a",
+        "bg_secondary": "#f1f5f9" if is_dark_mode else "#1e293b", 
+        "card_bg": "#ffffff" if is_dark_mode else "#1e293b",
+        "text_primary": "#1e293b" if is_dark_mode else "#f8fafc",
+        "text_secondary": "#475569" if is_dark_mode else "#cbd5e1",
+        "text_muted": "#64748b" if is_dark_mode else "#94a3b8",
+        "border": "#e2e8f0" if is_dark_mode else "#334155 "
     }
     
     st.markdown(f"""
