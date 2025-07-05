@@ -456,7 +456,7 @@ def main():
         
         with controls_col1:
             # Theme toggle
-            if st.button("🌙 Dark Mode" if not st.session_state.dark_mode else "☀️ Light Mode", 
+            if st.button("☀️ Light Mode" if not st.session_state.dark_mode else "🌙 Dark Mode", 
                         key="theme_toggle"):
                 st.session_state.dark_mode = not st.session_state.dark_mode
                 st.rerun()
