@@ -1,0 +1,448 @@
+# ZENIA PDF Processor - Streamlit Web App Setup Guide
+
+## 📋 Overview
+
+This guide will help you set up and deploy your PDF processor as a Streamlit web application. The web app maintains all the functionality of your desktop application while being accessible through any web browser.
+
+## 🚀 Quick Start
+
+### 1. Install Dependencies
+
+First, install the required packages:
+
+```bash
+pip install -r requirements.txt
+```
+
+### 2. File Structure
+
+Make sure your project has this structure:
+
+```
+your-project/
+├── streamlit_app.py          # Main Streamlit app
+├── order_processor.py        # Your existing processing logic
+├── requirements.txt          # Dependencies
+├── logo.png                  # ZENIA logo (optional)
+├── hazmat.png               # Hazmat warning image
+└── README.md                # This file
+```
+
+### 3. Run Locally
+
+To run the application locally:
+
+```bash
+streamlit run streamlit_app.py
+```
+
+The app will open in your browser at `http://localhost:8501`
+
+## 🌐 Deployment Options
+
+### Option 1: Streamlit Community Cloud (Free)
+
+1. **Push to GitHub:**
+   - Create a GitHub repository
+   - Push all your files to the repository
+
+2. **Deploy on Streamlit Cloud:**
+   - Go to [share.streamlit.io](https://share.streamlit.io)
+   - Sign in with GitHub
+   - Deploy your repository
+   - Your app will be live at `https://your-app-name.streamlit.app`
+
+### Option 2: Local Network Deployment
+
+To make the app accessible on your local network:
+
+```bash
+streamlit run streamlit_app.py --server.address 0.0.0.0 --server.port 8501
+```
+
+Then access via `http://YOUR_LOCAL_IP:8501`
+
+### Option 3: Docker Deployment
+
+Create a `Dockerfile`:
+
+```dockerfile
+FROM python:3.9-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+
+EXPOSE 8501
+
+CMD ["streamlit", "run", "streamlit_app.py", "--server.address", "0.0.0.0"]
+```
+
+Build and run:
+
+```bash
+docker build -t zenia-pdf-processor .
+docker run -p 8501:8501 zenia-pdf-processor
+```
+
+## 🎨 Key Features Converted to Web
+
+### ✅ Features Successfully Converted:
+
+1. **File Upload**: Multiple PDF file upload instead of folder browsing
+2. **Processing Logic**: All your existing order processing logic intact
+3. **Statistics Dashboard**: Real-time stats display
+4. **Progress Tracking**: Visual progress bars during processing
+5. **Log Display**: Real-time processing logs
+6. **Download Results**: Direct download of all output files
+7. **Theme Support**: Light/dark mode toggle
+8. **Responsive Design**: Works on desktop, tablet, and mobile
+9. **Modern UI**: Maintains your TikTok-inspired design
+
+### 🔄 Changes from Desktop Version:
+
+1. **File Handling**: Upload files instead of browsing folders
+2. **Output**: Download files instead of saving to local folders
+3. **Auto-open**: Not available in web version (browser limitation)
+4. **Temporary Processing**: Files processed in temporary directories
+5. **Session State**: Data stored in browser session
+
+## 🛠️ Configuration Options
+
+### Environment Variables
+
+You can configure the app using environment variables:
+
+```bash
+# Set maximum file upload size (in MB)
+export STREAMLIT_SERVER_MAX_UPLOAD_SIZE=200
+
+# Set theme
+export STREAMLIT_THEME_PRIMARY_COLOR="#FF0050"
+```
+
+### Streamlit Config
+
+Create `.streamlit/config.toml`:
+
+```toml
+[server]
+maxUploadSize = 200
+enableCORS = false
+enableXsrfProtection = false
+
+[theme]
+primaryColor = "#FF0050"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F0F2F6"
+textColor = "#262730"
+font = "sans serif"
+```
+
+## 📊 Performance Considerations
+
+### File Size Limits
+
+- Default Streamlit upload limit: 200MB
+- For larger files, increase via config or environment variables
+- Consider implementing file compression for very large batches
+
+### Memory Usage
+
+- Files are temporarily stored in memory during processing
+- For large batches, monitor server memory usage
+- Consider implementing batch processing for very large datasets
+
+## 🔧 Troubleshooting
+
+### Common Issues:
+
+1. **Import Errors:**
+   ```bash
+   # Make sure order_processor.py is in the same directory
+   # Check that all dependencies are installed
+   pip install -r requirements.txt
+   ```
+
+2. **File Upload Issues:**
+   ```bash
+   # Increase upload size limit
+   streamlit run app.py --server.maxUploadSize=500
+   ```
+
+3. **Memory Issues:**
+   - Process smaller batches
+   - Restart the app between large batches
+   - Consider upgrading server memory
+
+### Debug Mode:
+
+Run with debug logging:
+
+```bash
+streamlit run streamlit_app.py --logger.level=debug
+```
+
+## 🚀 Advanced Deployment
+
+### Production Deployment with Nginx
+
+1. **Setup Nginx reverse proxy:**
+
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+
+    location / {
+        proxy_pass http://localhost:8501;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+2. **Run Streamlit as a service:**
+
+Create `/etc/systemd/system/zenia-pdf.service`:
+
+```ini
+[Unit]
+Description=ZENIA PDF Processor
+After=network.target
+
+[Service]
+Type=simple
+User=your-user
+WorkingDirectory=/path/to/your/app
+ExecStart=/usr/local/bin/streamlit run streamlit_app.py --server.address 0.0.0.0
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable and start:
+
+```bash
+sudo systemctl enable zenia-pdf.service
+sudo systemctl start zenia-pdf.service
+```
+
+## 📱 Mobile Optimization
+
+The app is responsive and works on mobile devices, but for the best experience:
+
+1. **Use tablets or larger screens** for file uploads
+2. **Portrait mode recommended** for viewing logs
+3. **WiFi recommended** for large file uploads
+
+## 🔐 Security Considerations
+
+For production deployment:
+
+1. **Enable HTTPS** using SSL certificates
+2. **Implement authentication** if needed
+3. **Restrict file types** to PDFs only
+4. **Set file size limits** appropriately
+5. **Regular security updates** for dependencies
+
+## 💡 Tips for Best Experience
+
+1. **Batch Size**: Process 50-100 orders at a time for optimal performance
+2. **File Naming**: Use descriptive PDF names for easier tracking
+3. **Browser**: Use Chrome or Firefox for best compatibility
+4. **Network**: Stable internet connection recommended for uploads
+5. **Downloads**: Check your browser's download folder for output files
+
+## 📞 Support
+
+If you encounter issues:
+
+1. Check the processing log in the app
+2. Verify all PDF files are valid
+3. Ensure sufficient system memory
+4. Try processing smaller batches
+5. Restart the application if needed
+
+---
+
+**Note**: This web version maintains 100% of your original functionality while adding the convenience of web access. All your existing order processing logic, sorting rules, and output formats remain exactly the same.
+
+
+
+# 🚀 Deploy Your ZENIA PDF Processor to Streamlit Cloud (100% FREE)
+
+## 📋 **What You'll Get**
+- ✅ **Free hosting** on Streamlit Cloud
+- ✅ **Custom URL** like `https://your-app-name.streamlit.app`
+- ✅ **Access from anywhere** in the world
+- ✅ **Auto-updates** when you push code changes
+- ✅ **No server maintenance** required
+
+## 🎯 **Step-by-Step Deployment**
+
+### **Step 1: Prepare Your Files**
+
+Create a folder with these files:
+```
+zenia-pdf-processor/
+├── streamlit_app.py          # Your main app (updated version)
+├── order_processor.py        # Web-compatible processor
+├── requirements.txt          # Dependencies
+├── hazmat.png               # Hazmat warning image
+├── logo.png                 # ZENIA logo (optional)
+└── README.md                # Description (optional)
+```
+
+### **Step 2: Create GitHub Repository**
+
+1. **Go to [GitHub.com](https://github.com)** and sign in (create account if needed)
+
+2. **Click "New Repository"**
+   - Repository name: `zenia-pdf-processor`
+   - Description: `ZENIA PDF Label Processor - Web Edition`
+   - Make it **Public** (required for free Streamlit Cloud)
+   - ✅ Check "Add a README file"
+
+3. **Upload your files:**
+   - Click "uploading an existing file"
+   - Drag and drop all your files
+   - Commit with message: "Initial upload of ZENIA PDF Processor"
+
+### **Step 3: Deploy to Streamlit Cloud**
+
+1. **Go to [share.streamlit.io](https://share.streamlit.io)**
+
+2. **Sign in with GitHub** (use same account as Step 2)
+
+3. **Click "New app"**
+
+4. **Fill in the details:**
+   - **Repository:** `your-username/zenia-pdf-processor`
+   - **Branch:** `main` (default)
+   - **Main file path:** `streamlit_app.py`
+   - **App URL:** Choose a custom name like `zenia-pdf-processor` or `pdf-label-processor`
+
+5. **Click "Deploy!"**
+
+### **Step 4: Wait for Deployment**
+
+- First deployment takes **2-5 minutes**
+- You'll see the build logs
+- Once complete, your app will be live at: `https://your-app-name.streamlit.app`
+
+## 🔧 **Important Files to Update**
+
+### **requirements.txt** (Use this exact version):
+```txt
+streamlit==1.28.1
+pandas==2.0.3
+PyMuPDF==1.23.26
+pillow==10.0.1
+openpyxl==3.1.2
+python-dateutil==2.8.2
+numpy==1.24.4
+```
+
+### **README.md** (Optional but recommended):
+```markdown
+# ZENIA PDF Label Processor
+
+A modern web application for processing PDF shipping labels and packing slips.
+
+## Features
+- 📦 Batch PDF processing
+- 🏷️ Automatic hazmat detection  
+- 📊 Real-time statistics dashboard
+- 📥 Direct file downloads
+- 🌙 Dark/light theme support
+
+## Usage
+1. Upload PDF files containing shipping labels
+2. Configure hazmat keywords
+3. Click "Process" to start batch processing
+4. Download sorted results
+
+Made by Zurain & Danish • ZENIA
+```
+
+## 🛠️ **Troubleshooting Deployment**
+
+### **Common Issues:**
+
+1. **"Module not found" errors:**
+   - Check your `requirements.txt` has all dependencies
+   - Use exact versions I provided above
+
+2. **App won't start:**
+   - Make sure your main file is named `streamlit_app.py`
+   - Check the logs in Streamlit Cloud dashboard
+
+3. **File upload errors:**
+   - Default limit is 200MB per file
+   - This should be sufficient for PDF processing
+
+4. **Build fails:**
+   - Repository must be **public** for free tier
+   - Check all files are uploaded correctly
+
+### **App Management:**
+
+- **Update your app:** Push changes to GitHub, app auto-updates
+- **View logs:** Go to Streamlit Cloud dashboard → Your app → Logs
+- **Restart app:** Streamlit Cloud dashboard → Reboot
+- **Delete app:** Streamlit Cloud dashboard → Settings → Delete
+
+## 📊 **Usage Limits (Free Tier)**
+
+- ✅ **Unlimited apps** (as long as they're public)
+- ✅ **1 GB memory** per app
+- ✅ **1 CPU core** per app  
+- ✅ **No bandwidth limits**
+- ✅ **Custom domain** support (with upgrade)
+
+## 🌟 **Pro Tips**
+
+1. **Custom Domain:** You can later add your own domain like `processor.zenia.com`
+
+2. **Private Repos:** Upgrade to Streamlit Cloud Pro for $20/month to use private repos
+
+3. **Performance:** For heavy usage, consider the Pro tier with more resources
+
+4. **Monitoring:** Check the app metrics in Streamlit Cloud dashboard
+
+5. **Backup:** Keep your code on GitHub as backup
+
+## 🚀 **After Deployment**
+
+Your app will be live at: `https://your-chosen-name.streamlit.app`
+
+You can now:
+- ✅ Access it from any device with internet
+- ✅ Share the link with your team
+- ✅ Process PDFs from anywhere
+- ✅ No more local installation needed
+
+## 🔄 **Updating Your App**
+
+To update your deployed app:
+1. Make changes to your local files
+2. Push to GitHub repository
+3. Streamlit Cloud automatically rebuilds and deploys
+4. Changes are live in ~2 minutes
+
+## 💡 **Example URL**
+
+After deployment, your URL might look like:
+- `https://zenia-pdf-processor.streamlit.app`
+- `https://pdf-label-processor.streamlit.app`  
+- `https://zenia-labels.streamlit.app`
+
+Choose something memorable and professional!

@@ -1,0 +1,25 @@
+# ZENIA PDF Processor - Optimized Requirements
+# Faster, lighter versions for better performance
+
+# Core Streamlit (latest stable)
+streamlit==1.28.1
+
+# Fast data processing
+pandas==2.1.4
+numpy==1.25.2
+
+# PDF processing (optimized version)
+PyMuPDF==1.23.26
+
+# Image processing (optimized)
+pillow==10.1.0
+
+# Excel processing (faster alternative)
+openpyxl==3.1.2
+
+# Fast date/time utilities
+python-dateutil==2.8.2
+
+# Performance optimization libraries
+numba==0.58.1
+cython==3.0.6
